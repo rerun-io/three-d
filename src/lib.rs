@@ -26,3 +26,21 @@ pub use gui::*;
 
 /// A result for this crate.
 pub type ThreeDResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+
+/// Profiling macro for feature "puffin"
+macro_rules! profile_function {
+    ($($arg: tt)*) => {
+        #[cfg(feature = "puffin")]
+        puffin::profile_function!($($arg)*);
+    };
+}
+pub(crate) use profile_function;
+
+/// Profiling macro for feature "puffin"
+macro_rules! profile_scope {
+    ($($arg: tt)*) => {
+        #[cfg(feature = "puffin")]
+        puffin::profile_scope!($($arg)*);
+    };
+}
+pub(crate) use profile_scope;

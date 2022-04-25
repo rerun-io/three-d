@@ -201,6 +201,7 @@ impl InstancedMesh {
     }
 
     fn vertex_shader_source(&self, fragment_shader_source: &str) -> ThreeDResult<String> {
+        crate::profile_function!();
         let use_positions = fragment_shader_source.find("in vec3 pos;").is_some();
         let use_normals = fragment_shader_source.find("in vec3 nor;").is_some();
         let use_tangents = fragment_shader_source.find("in vec3 tang;").is_some();
@@ -267,6 +268,7 @@ impl Geometry for InstancedMesh {
         camera: &Camera,
         lights: &[&dyn Light],
     ) -> ThreeDResult<()> {
+        crate::profile_function!();
         let fragment_shader_source = material.fragment_shader_source(
             self.vertex_buffers.contains_key("color")
                 || self.instance_buffers.contains_key("instance_color"),
@@ -276,6 +278,7 @@ impl Geometry for InstancedMesh {
             &self.vertex_shader_source(&fragment_shader_source)?,
             &fragment_shader_source,
             |program| {
+                crate::profile_scope!("rendering");
                 material.use_uniforms(program, camera, lights)?;
                 program.use_uniform("viewProjection", camera.projection() * camera.view())?;
                 program.use_uniform("modelMatrix", &self.transformation)?;
